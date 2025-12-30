@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Dual.Infodose v8.0 · KOBLLUX OMEGA</title>
+  <title>Dual.Infodose v8.1 · KOBLLUX OMEGA</title>
   <meta name="theme-color" content="#050811" />
 
 <link rel="manifest" href="./manifest.json">
@@ -17,6 +17,7 @@
 </script>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.10.0/build/highlight.min.js"></script>
@@ -26,7 +27,7 @@
 
   <style>
     /* =========================================
-       1. SOLAR NEBULA PRO — CORE CSS (V7.9)
+       1. SOLAR NEBULA PRO — CORE CSS (V8.1)
        ========================================= */
     :root {
       --bg-deep: #050811; 
@@ -97,15 +98,30 @@
     #chat-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 140px 16px 100px 16px; z-index: 5; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; transition: opacity 0.4s ease; scroll-behavior: smooth; }
     #chat-container.collapsed { opacity: 0; pointer-events: none; }
 
-    .msg-block { max-width: 88%; padding: 12px 16px; border-radius: 12px; position: relative; animation: slideIn 0.3s ease-out; line-height: 1.5; font-size: 0.95rem; word-wrap: break-word; }
+    /* ======= PATCH A: ALARGAR RESPOSTAS & MONTSERRAT ======= */
+    .msg-block { 
+        max-width: 94% !important; 
+        padding: 16px 20px !important; 
+        border-radius: 14px; 
+        position: relative; 
+        animation: slideIn 0.3s ease-out; 
+        line-height: 1.6; 
+        font-size: 1.02rem; 
+        word-wrap: break-word; 
+    }
     .msg-block.user { align-self: flex-end; background: rgba(0,245,255,0.08); border-right: 2px solid var(--primary); text-align: right; }
     .msg-block.ai { align-self: flex-start; background: rgba(255,255,255,0.05); border-left: 2px solid var(--secondary); }
     .msg-block.system { align-self: center; font-size: 0.75rem; opacity: 0.8; text-align: center; border: 1px dashed rgba(255,255,255,0.2); background: transparent; padding: 6px 12px; font-style: italic; }
     @keyframes slideIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
 
-    /* Code & Preview */
+    /* Code & Preview - Montserrat em elementos textuais */
+    code, .cockpit-input, .chip, .chip-btn, .copy-code-btn, .glass-textarea {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+    /* Manter Monospace apenas para blocos de código grandes */
+    pre code { font-family: 'JetBrains Mono', monospace !important; font-size: 0.85rem; }
+    
     pre { position: relative; background: rgba(0,0,0,0.4); border-radius: 8px; margin: 10px 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
-    code { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
     .copy-code-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--primary); font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; z-index: 10; opacity: 0.7; transition: 0.2s; }
     .copy-code-btn:hover { opacity: 1; background: var(--primary); color: #000; }
 
@@ -171,7 +187,7 @@
     .cockpit-grid { display: flex; flex-direction: column; gap: 15px; }
     .cockpit-item { background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; }
     .cockpit-label { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-    .cockpit-input { background: transparent; border: none; color: white; font-family: 'JetBrains Mono', monospace; font-size: 1rem; outline: none; width: 100%; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; transition: 0.3s; }
+    .cockpit-input { background: transparent; border: none; color: white; font-family: 'Montserrat', sans-serif; font-size: 1rem; outline: none; width: 100%; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; transition: 0.3s; }
     .cockpit-input:focus { border-bottom-color: var(--secondary); }
     .control-row { display: flex; gap: 10px; margin-top: 20px; }
     .btn-block { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: inherit; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
@@ -192,102 +208,20 @@
     .flow-text p { text-wrap: pretty; line-height: 1.65; letter-spacing: .01em; margin: .65rem 0; hyphens: auto; }
     .flow-text .kv-head { font-weight: 800; letter-spacing:.02em; margin: 1.2rem 0 .4rem; }
     
-    /* Chips & Parentheses */
-        /* =========================================
-       NOVO DESIGN PARA CHIPS [ ] e [[ ]]
-       ========================================= */
-    
-    /* 1. O [Chip] Padrão - Estilo "Dado Técnico" */
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      vertical-align: middle;
-      
-      /* Tamanho e Espaço */
-      padding: 2px 6px;
-      margin: 0 2px;
-      transform: translateY(-1px); /* Ajuste ótico de linha */
-      
-      /* Tipografia */
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82em;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      color: var(--primary); /* Usa o Ciano Neon */
-      
-      /* Visual Glass/Tech */
-      background: rgba(0, 245, 255, 0.08); /* Fundo sutil */
-      border: 1px solid rgba(0, 245, 255, 0.25);
-      border-radius: 4px; /* Bordas levemente quadradas */
-      
-      cursor: default;
-      transition: all 0.3s ease;
-      user-select: text; /* Permite selecionar o texto dentro */
-    }
+    /* Chips & Pill Buttons Tweaks */
+    .chip { font-weight: 700; padding: 4px 8px; border-radius: 8px; background: rgba(0, 245, 255, 0.08); border: 1px solid rgba(0, 245, 255, 0.25); color: var(--primary); margin: 0 2px; font-size: 0.85rem; display: inline-block; }
+    .chip-btn { padding: 6px 14px; font-size: 0.85rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(255, 75, 255, 0.2)); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 99px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin: 0 2px; }
+    .chip-btn:hover { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #000; border-color: transparent; }
 
-    .chip:hover {
-      background: rgba(0, 245, 255, 0.15);
-      border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(0, 245, 255, 0.3); /* Glow ao passar o mouse */
-      color: #fff;
-    }
-
-    /* 2. O [[Botão]] - Estilo "Cápsula de Ação" */
-    .chip-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      
-      padding: 4px 12px;
-      margin: 0 3px;
-      
-      font-family: "Montserrat", sans-serif;
-      font-size: 0.8em;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #fff;
-      
-      /* Gradiente mais sofisticado e escuro */
-      background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(255, 75, 255, 0.2));
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 99px; /* Cápsula total */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-    }
-
-    /* Efeito de ícone implícito para botões */
-    .chip-btn::before {
-      content: '✦';
-      font-size: 0.9em;
-      color: var(--secondary);
-    }
-
-    .chip-btn:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-color: transparent;
-      color: #000; /* Texto preto no hover para contraste máximo */
-      box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
-    }
-
-    /* Ajuste para modo Claro (Day Mode) para não ficar invisível */
-    body.mode-day .chip {
-      background: rgba(0, 0, 0, 0.06);
-      border-color: rgba(0, 0, 0, 0.15);
-      color: #0056b3;
-    }
-    body.mode-day .chip-btn {
-      color: #333;
-      border-color: rgba(0,0,0,0.2);
-    }
-    body.mode-day .chip-btn:hover {
-      color: #fff;
-    }
-
+    /* TABELISTA (Nova) */
+    .list-card .tabelista { width:100%; border-collapse: collapse; margin-top: 8px; }
+    .list-card .tabelista td { padding: 8px 10px; border-bottom: 1px dashed rgba(255,255,255,0.04); vertical-align: top; }
+    .list-card .tabelista td:first-child { width: 44px; text-align: center; font-weight: 700; color: var(--txt-bd); }
+    .list-card .tabelista td .chip-btn,
+    .list-card .tabelista td .pill-btn,
+    .list-card .tabelista td button { margin: 3px 4px; }
+    .list-card .tabelista button { padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background: transparent; cursor: pointer; color: var(--text-main); }
+    .list-card .tabelista button:hover { background: rgba(255,255,255,0.1); }
 
     /* Question Card */
     .q-card { background: var(--txt-card); border: 1px solid var(--txt-bd); box-shadow: var(--txt-shadow, 0 6px 24px rgba(0,0,0,.25)); border-radius: 14px; padding: .85rem 1rem; margin: .9rem 0; display:grid; grid-template-columns:auto 1fr; gap:.65rem; align-items:start; }
@@ -470,7 +404,7 @@
 
 <script>
 /* =========================================================
-   DUAL.INFODOSE v8.0 — KOBLLUX OMEGA (MONOLITH)
+   DUAL.INFODOSE v8.1 — KOBLLUX OMEGA (MONOLITH)
    Integrated: Core Logic, Beauty V3, List V2, HTML View, Deck
 ========================================================= */
 
@@ -488,7 +422,7 @@ function getRandomText(arr){ if(!arr||arr.length===0)return"Processando..."; let
    --------------------------------------------------------- */
 const KoblluxCore = {
     async sha256Hex(s) { const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,'0')).join(''); },
-    classifyText(s) { const t = (s.match(/[\p{L}\p{N}_-]+/gu)||[]); return {tokens:t, verbs:[], nouns:[], adjs:[]}; }, // Simplified for speed
+    classifyText(s) { const t = (s.match(/[\p{L}\p{N}_-]+/gu)||[]); return {tokens:t, verbs:[], nouns:[], adjs:[]}; }, 
     mapTrinity(pos) { return { UNO: pos.tokens[0]||'NÚCLEO', DUAL: 'relaciona', TRINITY: 'integrado' }; },
     async process(input) { if(!input)return null; const pos=this.classifyText(input); const tri=this.mapTrinity(pos); const seal=await this.sha256Hex(input+new Date().toISOString()); return { raw:input, pos:pos, trinity:tri, seal:seal.slice(0,16), log:`[KOBLLUX ∆7] UNO:${tri.UNO}` }; }
 };
@@ -565,11 +499,18 @@ const App = {
     },
     toggleVoice() { if (!this.state.recognition) return; if (this.state.isListening) { this.state.isListening=false; this.state.recognition.stop(); } else { document.getElementById('userInput').value=''; try{this.state.recognition.start();}catch(e){} } },
 
+    // ===== PATCH B: HANDLE SEND E ADD MESSAGE ATUALIZADOS =====
     async handleSend() {
         const input = document.getElementById('userInput'); const txt = input.value.trim();
         if (!txt || this.state.isProcessing) return;
-        input.value = ''; this.addMessage('user', txt);
-        this.state.isProcessing = true; document.getElementById('field-toggle-handle').innerHTML = `<span class="footer-dot pulse"></span> ${getRandomText(FOOTER_TEXTS.loading)}`;
+        input.value = '';
+        // 1) Renderiza user message
+        this.addMessage('user', txt);
+        // 2) Atualiza footer e fala loading
+        const loadingText = getRandomText(FOOTER_TEXTS.loading);
+        document.getElementById('field-toggle-handle').innerHTML = `<span class="footer-dot pulse"></span> ${loadingText}`;
+        this.showToast(loadingText); // fala via toaster
+        this.state.isProcessing = true;
         
         try {
             document.body.classList.add('loading');
@@ -591,23 +532,36 @@ const App = {
         d.className = `msg-block ${role}`;
         d.dataset.raw = text||'';
 
-        // --- PATCH: marca blocos de resposta como "response-block" e seta rawText ---
-        if(role === 'ai'){
-          d.classList.add('response-block');
-          d.dataset.rawText = (text || '').replace(/<\/?[^>]+(>|$)/g, ""); // raw plain text for TTS
-        }
-        // -------------------------------------------------------------------------
-    
-        let html = role==='ai' ? marked.parse(text) : text.replace(/\n/g, '<br>');
+        // Marca rawText (útil para TTS)
+        d.dataset.rawText = (text || '').replace(/<\/?[^>]+(>|$)/g, ""); 
+
+        if(role === 'ai') d.classList.add('response-block');
+
+        // Markdown para ambos (IA e User, para permitir chips/listas no input do usuário)
+        let html = marked.parse(text);
+        
         if(role !== 'system') {
-            html += `<div class="msg-tools"><button class="tool-btn" onclick="Utils.copy(this)"><svg><use href="#icon-copy"></use></svg></button><button class="tool-btn" onclick="Utils.speak(this)"><svg><use href="#icon-mic"></use></svg></button>${role === 'ai' ? `<button class="tool-btn" onclick="DownloadUtils.downloadMessage(this)"><svg><use href="#icon-download"></use></svg></button><button class="tool-btn" onclick="DownloadUtils.openSandbox(this)"><svg><use href="#icon-sandbox"></use></svg></button><button class="tool-btn" onclick="DownloadUtils.exportPdf(this)"><svg><use href="#icon-pdf"></use></svg></button>` : `<button class="tool-btn" onclick="Utils.edit(this)"><svg><use href="#icon-edit"></use></svg></button>`}</div>`;
-            this.state.messages.push({ role: role==='ai'?'assistant':'user', content: text });
+            const tools = [];
+            tools.push(`<button class="tool-btn" onclick="Utils.copy(this)"><svg><use href="#icon-copy"></use></svg></button>`);
+            tools.push(`<button class="tool-btn" onclick="Utils.speak(this)"><svg><use href="#icon-mic"></use></svg></button>`);
+            if(role === 'ai'){
+                tools.push(`<button class="tool-btn" onclick="DownloadUtils.downloadMessage(this)"><svg><use href="#icon-download"></use></svg></button>`);
+                tools.push(`<button class="tool-btn" onclick="DownloadUtils.openSandbox(this)"><svg><use href="#icon-sandbox"></use></svg></button>`);
+                tools.push(`<button class="tool-btn" onclick="DownloadUtils.exportPdf(this)"><svg><use href="#icon-pdf"></use></svg></button>`);
+                this.state.messages.push({ role: 'assistant', content: text });
+            } else {
+                tools.push(`<button class="tool-btn" onclick="Utils.edit(this)"><svg><use href="#icon-edit"></use></svg></button>`);
+                this.state.messages.push({ role: 'user', content: text });
+            }
+            html += `<div class="msg-tools">${tools.join('')}</div>`;
         }
         d.innerHTML = html;
-        if (role === 'ai') d.querySelectorAll('pre').forEach(pre => { const b=document.createElement('button'); b.className='copy-code-btn'; b.textContent='Copiar'; b.onclick=()=>{navigator.clipboard.writeText(pre.innerText);}; pre.appendChild(b); });
+        // Botão copiar para code blocks
+        if (role === 'ai' || role === 'user') d.querySelectorAll('pre').forEach(pre => { const b=document.createElement('button'); b.className='copy-code-btn'; b.textContent='Copiar'; b.onclick=()=>{navigator.clipboard.writeText(pre.innerText);}; pre.appendChild(b); });
+        
         c.appendChild(d); c.scrollTop = c.scrollHeight;
         
-        // DISPATCH EVENT FOR BEAUTY PATCH
+        // Dispara evento para o beauty pipeline (Tabelista, Chips, etc)
         document.dispatchEvent(new CustomEvent('infodx:rendered', { detail: { node: d } }));
     },
     
@@ -691,14 +645,48 @@ function toggleDrawer(id) { document.getElementById(id).classList.toggle('open')
 window.onload = () => App.init();
 
 /* =========================================
-   3. BEAUTY PATCH SCRIPTS (INJECTED)
+   3. BEAUTY PATCH SCRIPTS (INJECTED + TABELISTA)
    ========================================= */
 (()=>{'use strict';
   const $=(s,r=document)=>r.querySelector(s); const $$=(s,r=document)=>[...r.querySelectorAll(s)];
   const esc=(s)=>s.replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
 
+  // ===== PATCH C: PROCESS TABELISTA =====
+  const processTabelista = (root=document) => {
+    const blocks = [...(root.querySelectorAll('.msg-block'))];
+    blocks.forEach(block => {
+      if(block.dataset.tabelista === '1') return;
+      // Pega o raw text
+      const raw = (block.dataset.raw || block.innerText || '').replace(/\r/g, '');
+      if(!raw) return;
+      
+      const paras = raw.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+      if(paras.length < 3) return; // Mínimo 3 parágrafos para ativar
+      
+      block.dataset.tabelista = '1';
+
+      // 1 e 2 são Header (Flow Text)
+      const headHtml = `<div class="flow-text"><p>${paras[0].replace(/\n/g,'<br>')}</p><p>${paras[1].replace(/\n/g,'<br>')}</p></div>`;
+
+      // 3+ são linhas da tabela
+      const rows = paras.slice(2).map((p, idx) => {
+        const cols = p.split('/').map(s=>s.trim()).filter(Boolean);
+        const cells = cols.map(c => `<td>${esc(c)}</td>`).join('');
+        if(cells === '') return `<tr><td>${idx+1}</td><td></td></tr>`;
+        return `<tr><td>${idx+1}</td>${cells}</tr>`;
+      }).join('');
+
+      const tableHtml = `<div class="list-card"><table class="tabelista"><tbody>${rows}</tbody></table></div>`;
+      
+      // Reconstrói o HTML do bloco
+      block.innerHTML = headHtml + tableHtml;
+      // Adiciona botões de tool de volta (opcional, mas o CSS cobre)
+      // Nota: processInline rodará depois para transformar [chips] dentro das células
+    });
+  };
+
   const processInline = (root=document)=>{
-    const targets = $$('p, li, h1, h2, h3, h4, h5, h6', root).filter(n=>!n.closest('pre, code, .no-beauty'));
+    const targets = $$('p, li, h1, h2, h3, h4, h5, h6, td', root).filter(n=>!n.closest('pre, code, .no-beauty'));
     const rxKV = /(^|\s)([A-Za-zÀ-ÿ0-9_]+):(?=\s|$)/g; 
     const rxParen = /\(([^\n)]+)\)/g; 
     const rxChip  = /\[\[([^[\]]+)\]\]|\[([^[\]]+)\]/g; 
@@ -753,7 +741,12 @@ window.onload = () => App.init();
 
   const runAll = (node) => {
     const root = node || document;
-    processInline(root); processQuestions(root); wrapLists(root); enableCopyLists(root); renderRawHTML(root);
+    processTabelista(root); // 1. Tenta converter em tabela primeiro
+    processInline(root);    // 2. Transforma chips e inlines (mesmo dentro da tabela)
+    processQuestions(root);
+    wrapLists(root);
+    enableCopyLists(root);
+    renderRawHTML(root);
   };
 
   document.addEventListener('infodx:rendered', (e)=> runAll(e.detail.node));
